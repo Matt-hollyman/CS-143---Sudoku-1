@@ -74,6 +74,19 @@ private boolean isValidColumns() {
    return true;
 }
 
+//check each minisquare
+private char[][] miniSquare(int spot) {
+   char[][] mini = new char[3][3];
+
+   for (int r = 0; r < 3; r++) {
+      for (int c = 0; c < 3; c++) {
+         mini[r][c] = bd[(spot - 1) / 3 * 3 + r]
+                         [(spot - 1) % 3 * 3 + c];
+      }
+   }
+   return mini;
+}
+
 public class SudokuBoard {
     private char[][] bd;
     public SudokuBoard(String fn) throws FileNotFoundException {
