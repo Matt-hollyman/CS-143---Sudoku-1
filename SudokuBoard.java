@@ -2,6 +2,26 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+//set four private helpers
+//check that every cell contains a number from 0 to 9.
+private boolean isValidData() {
+
+}
+//check that each row has no duplicate numbers from 1 to 9.
+private boolean isValidRows() {
+   
+}
+//check that each column has no duplicate numbers from 1 to 9.
+private boolean isValidColumns() {
+
+}
+//check that each 3x3 mini-square has no duplicate numbers from 1 to 9.
+private boolean isValidMiniSquares() {
+
+}
+
+
+
 public class SudokuBoard {
     private char[][] bd;
     public SudokuBoard(String fn) throws FileNotFoundException {
