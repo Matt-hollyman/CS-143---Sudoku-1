@@ -109,7 +109,15 @@ private boolean isValidMiniSquares() {
    return true;
 }
 
-//
+//combine all the method(four helpers)
+public boolean isValid() {
+   return isValidData()
+       && isValidRows()
+       && isValidColumns()
+       && isValidMiniSquares();
+}
+
+
 public class SudokuBoard {
     private char[][] bd;
     public SudokuBoard(String fn) throws FileNotFoundException {
