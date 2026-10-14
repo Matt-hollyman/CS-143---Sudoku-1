@@ -55,7 +55,24 @@ private boolean isValidRows() {
 
    return true;
 }
+//check each columns
+private boolean isValidColumns() {
+   for (int c = 0; c < bd[0].length; c++) {
+      Set<Character> numbers = new HashSet<Character>();
 
+      for (int r = 0; r < bd.length; r++) {
+         char number = bd[r][c];
+
+         if (number != ' ') {
+            if (numbers.contains(number)) {
+               return false;
+            }
+            numbers.add(number);
+         }
+      }
+   }
+   return true;
+}
 
 public class SudokuBoard {
     private char[][] bd;
