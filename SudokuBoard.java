@@ -1,6 +1,8 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.HashSet;
 
 //set four private helpers
 //check that every cell contains a number from 0 to 9.
@@ -29,6 +31,28 @@ private boolean isValidData() {
          }
       }
    }
+   return true;
+}
+
+//isValidRows: Make sure that no row contains a duplicate value.
+private boolean isValidRows() {
+   for (int r = 0; r < board.length; r++) {
+      Set<Integer> numbers = new HashSet<Integer>();
+       
+       //check for each row
+       for (int c = 0; c < bd[r].length; c++) {
+         char number = bd[r][c];
+
+         if (number != ' ') {
+            if (numbers.contains(number)) {
+               return false;
+            }
+            numbers.add(number);
+         }
+      }
+
+   }
+
    return true;
 }
 
