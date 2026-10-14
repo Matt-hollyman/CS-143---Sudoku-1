@@ -20,6 +20,17 @@ private boolean isValidMiniSquares() {
 
 }
 
+//is valid method is to check every numbers are in the range1-9
+private boolean isValidData() {
+   for (int r = 0; r < board.length; r++) {
+      for (int c = 0; c < board[r].length; c++) {
+         if (board[r][c] < 0 || board[r][c] > 9) {
+            return false;
+         }
+      }
+   }
+   return true;
+}
 
 
 public class SudokuBoard {
