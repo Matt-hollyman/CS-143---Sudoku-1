@@ -87,6 +87,29 @@ private char[][] miniSquare(int spot) {
    return mini;
 }
 
+//check if each mini square is valid
+private boolean isValidMiniSquares() {
+   for (int spot = 1; spot <= 9; spot++) {
+      char[][] mini = miniSquare(spot);
+      Set<Character> numbers = new HashSet<Character>();
+
+      for (int r = 0; r < 3; r++) {
+         for (int c = 0; c < 3; c++) {
+            char number = mini[r][c];
+
+            if (number != ' ') {
+               if (numbers.contains(number)) {
+                  return false;
+               }
+               numbers.add(number);
+            }
+         }
+      }
+   }
+   return true;
+}
+
+//
 public class SudokuBoard {
     private char[][] bd;
     public SudokuBoard(String fn) throws FileNotFoundException {
