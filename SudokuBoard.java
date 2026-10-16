@@ -8,34 +8,39 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class SudokuBoard {
+    private char[][] board;
 
-    private char[][] bd;
+    public SudokuBoard(String fileName) {
+        board = new char[9][9];
 
-    public SudokuBoard(String fn) throws FileNotFoundException {
-        bd = new char[9][9];
-        Scanner sc = new Scanner(new File(fn));
+        try {
+            Scanner fileScanner = new Scanner(new File(fileName));
 
-        for (int r = 0; r < bd.length; r++) {
-            String ln = sc.next();
+            for (int row = 0; row < board.length; row++) {
+                String currentLine = fileScanner.next();
 
-            for (int c = 0; c < bd[r].length; c++) {
-                char ch = ln.charAt(c);
+                for (int column = 0; column < board[row].length; column++) {
+                    char currentCharacter = currentLine.charAt(column);
 
-                if (ch == '.') {
-                    bd[r][c] = ' ';
-                } else {
-                    bd[r][c] = ch;
+                    if (currentCharacter == '.') {
+                        board[row][column] = ' ';
+                    } else {
+                        board[row][column] = currentCharacter;
+                    }
                 }
             }
+            fileScanner.close();
+
+        } catch (FileNotFoundException exception) {
+            throw new IllegalArgumentException("File not found: " + fileName, exception);
         }
-        sc.close();
     }
 
-    // Part 1: Check that all data is valid
+    //check that every cell contains a number from 1 to 9 or a space.
     private boolean isValidData() {
-        for (int r = 0; r < bd.length; r++) {
-            for (int c = 0; c < bd[r].length; c++) {
-                char number = bd[r][c];
+        for (int row = 0; row < board.length; row++) {
+            for (int column = 0; column < board[row].length; column++) {
+                char number = board[row][column];
 
                 if (number != ' ' &&
                     (number < '1' || number > '9')) {
@@ -46,72 +51,72 @@ public class SudokuBoard {
         return true;
     }
 
-    // Check that each row has no duplicate numbers
+    //check that each row has no duplicate numbers from 1 to 9.
     private boolean isValidRows() {
-        for (int r = 0; r < bd.length; r++) {
-            Set<Character> numbers = new HashSet<Character>();
+        for (int row = 0; row < board.length; row++) {
+            Set<Character> seenNumbers = new HashSet<Character>();
 
-            for (int c = 0; c < bd[r].length; c++) {
-                char number = bd[r][c];
+            for (int column = 0; column < board[row].length; column++) {
+                char number = board[row][column];
 
                 if (number != ' ') {
-                    if (numbers.contains(number)) {
+                    if (seenNumbers.contains(number)) {
                         return false;
                     }
-                    numbers.add(number);
+                    seenNumbers.add(number);
                 }
             }
         }
         return true;
     }
 
-    // Check that each column has no duplicate numbers
+    //check that each column has no duplicate numbers from 1 to 9.
     private boolean isValidColumns() {
-        for (int c = 0; c < bd[0].length; c++) {
-            Set<Character> numbers = new HashSet<Character>();
+        for (int column = 0; column < board[0].length; column++) {
+            Set<Character> seenNumbers = new HashSet<Character>();
 
-            for (int r = 0; r < bd.length; r++) {
-                char number = bd[r][c];
+            for (int row = 0; row < board.length; row++) {
+                char number = board[row][column];
 
                 if (number != ' ') {
-                    if (numbers.contains(number)) {
+                    if (seenNumbers.contains(number)) {
                         return false;
                     }
-                    numbers.add(number);
+                    seenNumbers.add(number);
                 }
             }
         }
         return true;
     }
 
-    // Get a 3x3 mini-square
-    private char[][] miniSquare(int spot) {
-        char[][] mini = new char[3][3];
+    //check each minisquare
+    private char[][] miniSquare(int squareNumber) {
+        char[][] miniSquareBoard = new char[3][3];
 
-        for (int r = 0; r < 3; r++) {
-            for (int c = 0; c < 3; c++) {
-                mini[r][c] = bd[(spot - 1) / 3 * 3 + r]
-                              [(spot - 1) % 3 * 3 + c];
+        for (int row = 0; row < 3; row++) {
+            for (int column = 0; column < 3; column++) {
+                miniSquareBoard[row][column] = board[(squareNumber - 1) / 3 * 3 + row]
+                               [(squareNumber - 1) % 3 * 3 + column];
             }
         }
-        return mini;
+        return miniSquareBoard;
     }
 
-    // Check each 3x3 mini-square
+    //check if each mini square is valid
     private boolean isValidMiniSquares() {
-        for (int spot = 1; spot <= 9; spot++) {
-            char[][] mini = miniSquare(spot);
-            Set<Character> numbers = new HashSet<Character>();
+        for (int squareNumber = 1; squareNumber <= 9; squareNumber++) {
+            char[][] miniSquareBoard = miniSquare(squareNumber);
+            Set<Character> seenNumbers = new HashSet<Character>();
 
-            for (int r = 0; r < 3; r++) {
-                for (int c = 0; c < 3; c++) {
-                    char number = mini[r][c];
+            for (int row = 0; row < 3; row++) {
+                for (int column = 0; column < 3; column++) {
+                    char number = miniSquareBoard[row][column];
 
                     if (number != ' ') {
-                        if (numbers.contains(number)) {
+                        if (seenNumbers.contains(number)) {
                             return false;
                         }
-                        numbers.add(number);
+                        seenNumbers.add(number);
                     }
                 }
             }
@@ -119,7 +124,7 @@ public class SudokuBoard {
         return true;
     }
 
-    // Combine all four helper methods
+    //combine all the method(four helpers)
     public boolean isValid() {
         return isValidData()
             && isValidRows()
@@ -127,28 +132,26 @@ public class SudokuBoard {
             && isValidMiniSquares();
     }
 
-     // Part 2: Check if the Sudoku puzzle is solved
+    //Check if the Sudoku puzzle is solved
     public boolean isSolved() {
-        Map<Character, Integer> counts =
-            new HashMap<Character, Integer>();
+        Map<Character, Integer> numberCounts = new HashMap<Character, Integer>();
 
-        for (int r = 0; r < bd.length; r++) {
-            for (int c = 0; c < bd[r].length; c++) {
-                char number = bd[r][c];
+        for (int row = 0; row < board.length; row++) {
+            for (int column = 0; column < board[row].length; column++) {
+                char number = board[row][column];
 
                 if (number >= '1' && number <= '9') {
-                    if (counts.containsKey(number)) {
-                        counts.put(number, counts.get(number) + 1);
+                    if (numberCounts.containsKey(number)) {
+                        numberCounts.put(number, numberCounts.get(number) + 1);
                     } else {
-                        counts.put(number, 1);
+                        numberCounts.put(number, 1);
                     }
                 }
             }
         }
 
         for (char number = '1'; number <= '9'; number++) {
-            if (!counts.containsKey(number) ||
-                counts.get(number) != 9) {
+            if (!numberCounts.containsKey(number) || numberCounts.get(number) != 9) {
                 return false;
             }
         }
@@ -159,18 +162,18 @@ public class SudokuBoard {
     public String toString() {
         String result = "";
 
-        for (int r = 0; r < bd.length; r++) {
-            for (int c = 0; c < bd[r].length; c++) {
-                if (c % 3 == 0) {
+        for (int row = 0; row < board.length; row++) {
+            for (int column = 0; column < board[row].length; column++) {
+                if (column % 3 == 0) {
                     result = result + "| ";
                 }
 
-                result = result + bd[r][c] + " ";
+                result = result + board[row][column] + " ";
             }
 
             result = result + "|\n";
 
-            if ((r + 1) % 3 == 0 && r < bd.length - 1) {
+            if ((row + 1) % 3 == 0 && row < board.length - 1) {
                 result = result + "\n";
             }
         }
