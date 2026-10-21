@@ -134,30 +134,37 @@ public class SudokuBoard {
 
     //Check if the Sudoku puzzle is solved
     public boolean isSolved() {
-        Map<Character, Integer> numberCounts = new HashMap<Character, Integer>();
+    // Store the count of each number
+    Map<Character, Integer> counts = new HashMap<Character, Integer>();
 
-        for (int row = 0; row < board.length; row++) {
-            for (int column = 0; column < board[row].length; column++) {
-                char number = board[row][column];
+    // Go through every cell in the board
+    for (int r = 0; r < board.length; r++) {
+        for (int c = 0; c < board[r].length; c++) {
+            char number = board[r][c];
 
-                if (number >= '1' && number <= '9') {
-                    if (numberCounts.containsKey(number)) {
-                        numberCounts.put(number, numberCounts.get(number) + 1);
-                    } else {
-                        numberCounts.put(number, 1);
-                    }
+            // Count numbers from 1 to 9
+            if (number >= '1' && number <= '9') {
+                if (counts.containsKey(number)) {
+                    // Increase the count if the number exists
+                    counts.put(number, counts.get(number) + 1);
+                } else {
+                    // Set the count to 1 for a new number
+                    counts.put(number, 1);
                 }
             }
         }
-
-        for (char number = '1'; number <= '9'; number++) {
-            if (!numberCounts.containsKey(number) || numberCounts.get(number) != 9) {
-                return false;
-            }
-        }
-
-        return isValid();
     }
+
+    // Check if each number appears exactly 9 times
+    for (char number = '1'; number <= '9'; number++) {
+        if (!counts.containsKey(number) || counts.get(number) != 9) {
+            return false;
+        }
+    }
+
+    // Check if the board follows all Sudoku rules
+    return isValid();
+}
 
     public String toString() {
         String result = "";
